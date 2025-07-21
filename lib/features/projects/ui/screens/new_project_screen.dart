@@ -27,7 +27,6 @@ class _NewProjectScreenState extends ConsumerState<NewProjectScreen> {
           .createProject(_projectNameController.text.trim());
       if (project != null && project.isNotEmpty) {
         if (mounted) {
-          ref.read(selectedProjectIdProvider.notifier).state = project;
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

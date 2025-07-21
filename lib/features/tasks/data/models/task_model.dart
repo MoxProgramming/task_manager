@@ -2,6 +2,7 @@ import 'package:task_manager/core/constants/priority.dart';
 import 'package:task_manager/core/constants/task_status.dart';
 
 class TaskModel {
+  final String uid;
   final String postedBy;
   final String title;
   final String? description;
@@ -11,6 +12,7 @@ class TaskModel {
   final String? assignedTo;
 
   TaskModel({
+    required this.uid,
     required this.postedBy,
     required this.title,
     this.description,
@@ -22,6 +24,7 @@ class TaskModel {
 
   factory TaskModel.fromJson(Map<String, dynamic> json) {
     return TaskModel(
+      uid: json['uid'],
       postedBy: json['postedBy'],
       title: json['title'],
       description: json['description'],
@@ -34,6 +37,7 @@ class TaskModel {
 
   Map<String, dynamic> toJson() {
     return {
+      'uid': uid,
       'postedBy': postedBy,
       'title': title,
       'description': description,

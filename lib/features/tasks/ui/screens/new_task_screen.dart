@@ -16,11 +16,14 @@ class NewTaskScreen extends ConsumerStatefulWidget {
 class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _taskNameController = TextEditingController();
+  final TextEditingController _taskDescriptionController =
+      TextEditingController();
   Priority _selectedPriority = Priority.regular;
 
   @override
   void dispose() {
     _taskNameController.dispose();
+    _taskDescriptionController.dispose();
     super.dispose();
   }
 
@@ -29,16 +32,14 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
     final projectId = ref.read(selectedProjectIdProvider);
     final user = ref.read(authStateChangesProvider).value;
     if (projectId != null && user != null) {
-      final task = TaskModel(
-        postedBy: user.uid,
-        title: _taskNameController.text.trim(),
-        priority: _selectedPriority,
-        dateCreated: DateTime.now(),
-        status: TaskStatus.open,
-      );
       await ref
           .read(taskRepositoryProvider)
-          .createTask(projectId: projectId, task: task);
+          .createTask(
+            projectId: projectId,
+            title: _taskNameController.text.trim(),
+            description: _taskDescriptionController.text.trim(),
+            priority: _selectedPriority,
+          );
       if (mounted) Navigator.of(context).pop();
     }
   }
@@ -62,6 +63,10 @@ class _NewTaskScreenState extends ConsumerState<NewTaskScreen> {
                   }
                   return null;
                 },
+              ),
+              TextFormField(
+                controller: _taskDescriptionController,
+                decoration: const InputDecoration(labelText: 'Description'),
               ),
               DropdownButtonFormField(
                 value: _selectedPriority,

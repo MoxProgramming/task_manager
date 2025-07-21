@@ -67,8 +67,8 @@ class ProjectsRepository {
   Future<void> addMemberToProject({
     required String projectId,
     required String newUid,
+    required String projectName,
   }) async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
     final now = DateTime.now();
 
     final projectRef = _firestore.collection('projects').doc(projectId);
@@ -76,7 +76,7 @@ class ProjectsRepository {
     final batch = _firestore.batch();
 
     final memberData = ProjectMemberModel(
-      uid: uid,
+      uid: newUid,
       role: Roles.user,
       dateJoined: now,
       taskStatusFilter: TaskStatus.values,
@@ -87,13 +87,20 @@ class ProjectsRepository {
       memberData.toJson(),
     );
 
+    final userProjectData = UserProjectModel(
+      uid: projectId,
+      role: Roles.user,
+      dateJoined: now,
+      projectName: projectName,
+    );
+
     batch.set(
       _firestore
           .collection('users')
           .doc(newUid)
           .collection('projects')
           .doc(projectId),
-      {'projectId': projectId, 'role': Roles.user, 'dateJoined': now},
+      userProjectData.toJson(),
     );
 
     await batch.commit();

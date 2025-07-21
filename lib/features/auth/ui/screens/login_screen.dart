@@ -36,37 +36,96 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Login')),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            if (_errorMessage != null)
-              Text(_errorMessage!, style: TextStyle(color: Colors.red)),
-            AppTextField(
-              controller: _emailController,
-              label: 'Email',
-              obscureText: false,
-            ),
-            AppTextField(
-              controller: _passwordController,
-              label: 'Password',
-              obscureText: true,
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(onPressed: _signIn, child: Text('Login')),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const RegisterScreen()),
-                );
-              },
-              child: const Text('Don\'t have an account? Register'),
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        // Example background image (replace with your actual image)
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF6dd5ed), // Start color (light blue)
+            const Color(0xFF2193b0), // End color (darker blue)
           ],
+          stops: const [0.0, 1.0],
         ),
       ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          title: const Text('Login'),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        body: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (_errorMessage != null)
+                  Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.red),
+                  ),
+                const SizedBox(height: 20),
+                _buildTextField(_emailController, 'Email', false),
+                const SizedBox(height: 20),
+                _buildTextField(
+                  _passwordController,
+                  'Password',
+                  true,
+                  onSubmit: (value) => _signIn(),
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: _signIn,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 50,
+                      vertical: 15,
+                    ),
+                    textStyle: const TextStyle(fontSize: 18),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                    );
+                  },
+                  child: const Text(
+                    'Don\'t have an account? Register',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(
+    TextEditingController controller,
+    String label,
+    bool obscureText, {
+    Function(String)? onSubmit,
+  }) {
+    return AppTextField(
+      controller: controller,
+      label: label,
+      obscureText: obscureText,
+      onSubmit: onSubmit,
     );
   }
 }
